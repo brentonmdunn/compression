@@ -62,6 +62,10 @@ class Write:
             print("self.current_buffer: " + str(self.current_buffer))
             self.write_byte(self.current_buffer)
 
+    def write_nonstd(self, value: str):
+        for char in value:
+            self.write_bit(char)
+
 
     def write_final(self):
         """Writes additional 0s to make a complete byte."""
