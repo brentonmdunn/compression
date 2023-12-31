@@ -34,3 +34,9 @@ class Read:
             self.current_buffer = list(self.read_byte())
             self.current_buffer_idx = 0
         return self.current_buffer[self.current_buffer_idx]
+
+
+    def read_nonstd(self, num: int):
+        output = ""
+        for _ in range(num):
+            output += self.read_bit()
