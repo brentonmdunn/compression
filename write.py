@@ -1,29 +1,35 @@
-from typing import List, Union
+"""Class file for Read object."""
+
+from typing import List
 
 class Write:
     """Writes to specified file."""
+
     def __init__(self, file_path: str):
         self.file_path: str = file_path
         self.current_buffer: List[str] = [0 for _ in range(8)]
         self.current_buffer_idx: int = 0
 
-    
-    def flush_buffer(self):
+
+    def flush_buffer(self) -> None:
         """Resets buffer to all 0s."""
         self.current_buffer = [0 for _ in range(8)]
 
 
-    def write_byte(self, bit_str: Union[List[str], str]):
+    def reset(self) -> None:
+        """Resets buffer."""
+        self.current_buffer: List[str] = [0 for _ in range(8)]
+        self.current_buffer_idx: int = 0
+
+
+    def write_byte(self, bit_str: str) -> None:
         """Writes bytes to file."""
 
         if len(bit_str) != 8:
             raise ValueError("Byte must be 8 digits.")
         
         # Puts bits in list if not already
-        if not isinstance(bit_str, list):
-            bits: List[int] = [int(char) for char in bit_str if char.isdigit()]
-        else:
-            bits = bit_str
+        bits: List[int] = [int(char) for char in bit_str if char.isdigit()]
 
         with open(self.file_path, 'ab') as f:
             byte = 0
@@ -46,7 +52,7 @@ class Write:
                 f.write(bytes([byte]))
 
 
-    def write_bit(self, bit: Union[int, str]):
+    def write_bit(self, bit: str) -> None:
         """Writes bit to file."""
 
         if len(bit) != 1:
@@ -62,13 +68,18 @@ class Write:
             print("self.current_buffer: " + str(self.current_buffer))
             self.write_byte(self.current_buffer)
 
-    def write_nonstd(self, value: str):
+
+    def write_nonstd(self, value: str) -> None:
+        """Writes a non-standard (i.e., not a byte) amount of bits."""
         for char in value:
             self.write_bit(char)
 
 
-    def write_final(self):
-        """Writes additional 0s to make a complete byte."""
+    def write_final(self) -> None:
+        """
+        Writes additional 0s so that a full byte is written. 
+        Forces buffer to write since it doesn't write until all 8 bits are in list.
+        """
 
         if self.current_buffer_idx != 0:
             for _ in range(self.current_buffer_idx, 8):
