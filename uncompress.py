@@ -20,13 +20,13 @@ def main() -> None:
 
     # Read header
     if not file_size_zero:
+        header_size: int = int(reader.read_byte(), 2)
         for i in range(256):
             binary_str = format(i, '08b')
-            byte1 = reader.read_byte()
-            byte2 = reader.read_byte()
-            byte3 = reader.read_byte()
-
-            combined = byte1 + byte2 + byte3
+            # combined: str = ""
+            # for _ in range(header_size):
+            #     combined += reader.read_byte()
+            combined: str = reader.read_nonstd(header_size)
 
             freq_dict[binary_str] = int(combined, 2)
 
@@ -39,8 +39,13 @@ def main() -> None:
     for value in freq_dict.values():
         total_size += value
 
-    # Decodes bytes.
-    for _ in range(total_size):
+    # Decodes bytes
+    # prev = 0
+    for i in range(total_size):
+        # _round = round(i/total_size, 2)
+        # if _round != prev:
+        #     print(_round)
+        #     prev = _round
         to_write = tree.decode(reader)
         if to_write is None:
             break

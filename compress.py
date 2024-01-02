@@ -5,6 +5,12 @@ from typing import Dict
 from read import Read
 from tree import Tree
 from write import Write
+import math
+
+class FileTooLargeError(Exception):
+    def __init__(self, message="File is too big"):
+        self.message = message
+        super().__init__(self.message)
 
 def main() -> None:
     """Main method for compress.py."""
@@ -35,15 +41,13 @@ def main() -> None:
     tree.create_tree(freq_dict)
 
     # Create header (right now it is 3 byte header)
+    bits_needed = math.ceil(math.log(reader.file_size, 2))
+    if bits_needed > 255:
+        raise FileTooLargeError("The file is too big to process.")
+    writer.write_byte(format(bits_needed, '08b'))
+    print(bits_needed)
     for _, value in freq_dict.items():
-
-        byte1 = format((value >> 16) & 0xFF, '08b')
-        byte2 = format((value >> 8) & 0xFF, '08b')
-        byte3 = format(value & 0xFF, '08b')
-
-        writer.write_byte(byte1)
-        writer.write_byte(byte2)
-        writer.write_byte(byte3)
+        writer.write_nonstd(format(value, f'0{bits_needed}b'))
 
     writer.reset()
     reader.reset_gen()

@@ -28,7 +28,7 @@ class Tree:
             node1: Node = pq.get()
             node2: Node = pq.get()
 
-            leaves: List[str] = (node1.leaves + node2.leaves)
+            leaves: List[str] = node1.leaves + node2.leaves
             combined: Node = Node(node1.identifier, node1.freq + node2.freq, leaves)
             node1.parent = combined
             node2.parent = combined

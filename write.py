@@ -1,6 +1,6 @@
 """Class file for Read object."""
 
-from typing import List
+from typing import List, Union
 
 class Write:
     """Writes to specified file."""
@@ -22,14 +22,17 @@ class Write:
         self.current_buffer_idx: int = 0
 
 
-    def write_byte(self, bit_str: str) -> None:
+    def write_byte(self, bit_str: Union[str, List[str]]) -> None:
         """Writes bytes to file."""
 
         if len(bit_str) != 8:
             raise ValueError("Byte must be 8 digits.")
         
         # Puts bits in list if not already
-        bits: List[int] = [int(char) for char in bit_str if char.isdigit()]
+        if not isinstance(bit_str, list):
+            bits: List[int] = [int(char) for char in bit_str if char.isdigit()]
+        else:
+            bits: List[int] = bit_str
 
         with open(self.file_path, 'ab') as f:
             byte = 0
@@ -65,7 +68,6 @@ class Write:
         # Writes byte when a full byte is created
         if (self.current_buffer_idx == 8):
             self.current_buffer_idx = 0
-            print("self.current_buffer: " + str(self.current_buffer))
             self.write_byte(self.current_buffer)
 
 
