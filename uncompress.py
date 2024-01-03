@@ -5,6 +5,8 @@ from typing import Dict
 from read import Read
 from tree import Tree
 from write import Write
+from progress_bar import ProgressBar
+
 
 def main() -> None:
     """Main file for uncompress.py."""
@@ -40,12 +42,24 @@ def main() -> None:
         total_size += value
 
     # Decodes bytes
-    # prev = 0
+    progress_bar = ProgressBar()
+    prev_round = 0
+    total_iter = 1000 if total_size > 1000 else total_size
+    progress_bar.print(0, total_iter, prefix = 'Progress:', suffix = 'Complete', length = 50)
+    progress_bar_i = 0
     for i in range(total_size):
-        # _round = round(i/total_size, 2)
-        # if _round != prev:
-        #     print(_round)
-        #     prev = _round
+
+        # Progress bar
+        curr_round = round(((i/total_size) * 100), 1)
+        if curr_round != prev_round:    # One decimal point in percentage
+            progress_bar.print(progress_bar_i + 1,
+                               total_iter,
+                               prefix = 'Progress:',
+                               suffix = 'Complete',
+                               length = 50)
+            prev_round = curr_round
+            progress_bar_i += 1
+
         to_write = tree.decode(reader)
         if to_write is None:
             break
