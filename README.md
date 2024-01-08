@@ -1,4 +1,4 @@
-# File Compression with Huffman Encoding
+# File Compression with Huffman Coding
 
 This program compresses a file using Huffman coding. This is an type of lossless encoding that assigns a shorter encoding to more frequent bytes and a longer encoding to less frequent bytes.
 
